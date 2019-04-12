@@ -82,6 +82,16 @@ void breakLines(const String &str, std::ostream &out, const uint maxPerLine, con
   }
 }
 
+HMODULE GetCurrentModule()
+{
+    HMODULE hModule = NULL;
+    if (GetModuleHandleEx(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS, (LPCTSTR)GetCurrentModule, &hModule) != 0)
+    {
+        return hModule;
+    }
+    
+    return NULL;
+}
 
 int getFiles(const String &dir, const String &matchString, Vector<String> &files)
 {
@@ -113,7 +123,13 @@ int getFiles(const String &dir, const String &matchString, Vector<String> &files
   String basePath;
 
   if (dir.size() == 0)
-    basePath = "";
+  {
+      char szCurrentPath[1024] = { 0 };
+      GetModuleFileNameA(GetCurrentModule(), szCurrentPath, 1024);
+      basePath = szCurrentPath;
+      size_t endpos = basePath.find_last_of(DIR_SEP);
+      basePath = basePath.substr(0, endpos + 1);
+  }
   else
     basePath = dir + DIR_SEP;
 

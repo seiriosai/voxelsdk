@@ -98,7 +98,7 @@ DepthCameraFactoryPtr DepthCameraLibrary::getDepthCameraFactory()
 #endif
 
   String error;
-  if (!g && (error = dynamicLoadError()).size())  
+  if (!g || (error = dynamicLoadError()).size())  
   {
     logger(LOG_DEBUG) << "DepthCameraLibrary: Failed to load symbol " << symbol << " from library " << _libName << ". Error: " << error << std::endl;
     return 0;
@@ -124,7 +124,7 @@ FilterFactoryPtr DepthCameraLibrary::getFilterFactory()
   #endif
   
   String error;
-  if(!g && (error = dynamicLoadError()).size())  
+  if(!g || (error = dynamicLoadError()).size())  
   {
     logger(LOG_DEBUG) << "DepthCameraLibrary: Failed to load symbol " << symbol << " from library " << _libName << ". Error: " << error << std::endl;
     return 0;
@@ -150,7 +150,7 @@ DownloaderFactoryPtr DepthCameraLibrary::getDownloaderFactory()
   #endif
   
   String error;
-  if(!g && (error = dynamicLoadError()).size())  
+  if(!g || (error = dynamicLoadError()).size())  
   {
     logger(LOG_DEBUG) << "DepthCameraLibrary: Failed to load symbol " << symbol << " from library " << _libName << ". Error: " << error << std::endl;
     return 0;
