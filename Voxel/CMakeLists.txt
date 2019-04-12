@@ -54,7 +54,9 @@ add_library(voxel SHARED
   ${COMMON_LIB_FILES}
 )
 
+if (NOT HAS_SETCYAPI)
 set_library_output_directory(voxel)
+endif()
 
 add_library(Voxel::voxel ALIAS voxel)
 

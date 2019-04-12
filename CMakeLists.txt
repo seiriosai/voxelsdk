@@ -53,7 +53,7 @@ ELSEIF(CMAKE_SYSTEM_NAME STREQUAL "Windows")
   if (NOT HAS_SETCYAPI)
   SET(COMMON_LIBS_PRIVATE ${CMAKE_SOURCE_DIR}/Voxel/CyAPI/CyAPI.lib)
   endif()
-    
+
   configure_file(
     ${CMAKE_CURRENT_SOURCE_DIR}/config/dllversion.rc.in
     ${CMAKE_CURRENT_BINARY_DIR}/dllversion.rc
@@ -65,6 +65,7 @@ endif()
 
 set(CMAKE_PREFIX_PATH ${CMAKE_BINARY_DIR})
 
+if (NOT HAS_SETCYAPI)
 if(NOT CMAKE_CONFIGURATION_TYPES)
   set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/lib)
   set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/bin)
@@ -77,6 +78,7 @@ else()
     set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_${c} ${PROJECT_BINARY_DIR}/bin)
     set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY_${c} ${PROJECT_BINARY_DIR}/lib)
   endforeach()
+endif()
 endif()
   
 include_directories(
