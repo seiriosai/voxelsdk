@@ -1,4 +1,6 @@
+if (NOT HAS_SETCYAPI)
 find_package(Voxel ${VOXEL_VERSION} REQUIRED)
+endif()
 
 add_library(ti3dtof SHARED
   VoxelProgrammerBase.cpp
@@ -17,7 +19,9 @@ add_library(ti3dtof SHARED
   ${COMMON_LIB_FILES}
 )
 
+if(NOT HAS_SETCYAPI)
 set_library_output_directory(ti3dtof)
+endif()
 
 add_library(Voxel::ti3dtof ALIAS ti3dtof)
 
