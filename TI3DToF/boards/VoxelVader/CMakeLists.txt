@@ -4,7 +4,9 @@ add_library(voxelvader SHARED
   ${COMMON_LIB_FILES}
 )
 
+if(NOT HAS_SETCYAPI)
 set_voxel_library_output_directory(voxelvader)
+endif()
 
 generate_export_header(voxelvader
   EXPORT_FILE_NAME "SymbolExports.h"

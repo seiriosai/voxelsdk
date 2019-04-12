@@ -7,7 +7,9 @@ add_library(tintincdk SHARED
   ${COMMON_LIB_FILES}
 )
 
+if(NOT HAS_SETCYAPI)
 set_voxel_library_output_directory(tintincdk)
+endif()
 
 generate_export_header(tintincdk
   EXPORT_FILE_NAME "SymbolExports.h"

@@ -4,7 +4,9 @@ add_library(voxeld SHARED
   ${COMMON_LIB_FILES}
 )
 
+if(NOT HAS_SETCYAPI)
 set_voxel_library_output_directory(voxeld)
+endif()
 
 generate_export_header(voxeld
   EXPORT_FILE_NAME "SymbolExports.h"
