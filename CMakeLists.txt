@@ -140,9 +140,9 @@ set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "Voxel library package. Contains the main 
 set(CPACK_COMPONENTS_GROUPING ALL_COMPONENTS_IN_ONE)
 
 add_subdirectory(Voxel)
+add_subdirectory(TI3DToF)
 if (BUILD_VOXEL_TEST)
 add_subdirectory(VoxelPCL)
-add_subdirectory(TI3DToF)
 add_subdirectory(Test)
 add_subdirectory(App)
 endif()
