@@ -71,7 +71,7 @@ bool DepthCameraLibrary::load()
 #ifdef LINUX
   _libraryPrivate->handle = dlopen(_libName.c_str(), RTLD_LAZY | RTLD_LOCAL);
 #elif defined(WINDOWS)
-  _libraryPrivate->handle = LoadLibrary(_libName.c_str());
+  _libraryPrivate->handle = LoadLibraryA(_libName.c_str());
 #endif
 
   if(!_libraryPrivate->handle) 
@@ -209,16 +209,16 @@ int DepthCameraLibrary::getABIVersion()
   DWORD  verHandle = NULL;
   UINT   size = 0;
   LPBYTE lpBuffer = NULL;
-  DWORD  verSize = GetFileVersionInfoSize(_libName.c_str(), &verHandle);
+  DWORD  verSize = GetFileVersionInfoSizeA(_libName.c_str(), &verHandle);
 
   if (verSize != NULL)
   {
     Vector<char> verData;
     verData.resize(verSize);
 
-    if (GetFileVersionInfo(_libName.c_str(), verHandle, verSize, verData.data()))
+    if (GetFileVersionInfoA(_libName.c_str(), verHandle, verSize, verData.data()))
     {
-      if (VerQueryValue(verData.data(), "\\", (VOID FAR* FAR*)&lpBuffer, &size))
+      if (VerQueryValueA(verData.data(), "\\", (VOID FAR* FAR*)&lpBuffer, &size))
       {
         if (size)
         {

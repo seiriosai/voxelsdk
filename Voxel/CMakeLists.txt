@@ -149,7 +149,9 @@ install(FILES
   COMPONENT voxel_dev
 )
 
+if (BUILD_WITH_SWIG)
 add_subdirectory(SWIG)
+endif()
 
 IF(LINUX)
   set(CPACK_COMPONENTS_ALL voxel)

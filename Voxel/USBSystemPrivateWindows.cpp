@@ -17,7 +17,7 @@ struct DeviceInfo
 {
   SP_DEVINFO_DATA devInfo;
   SP_DEVICE_INTERFACE_DATA devInterfaceData;
-  Ptr<SP_DEVICE_INTERFACE_DETAIL_DATA> devInterfaceDetailData;
+  Ptr<SP_DEVICE_INTERFACE_DETAIL_DATA_A> devInterfaceDetailData;
 };
 
 std::string getDeviceError()
@@ -137,18 +137,18 @@ bool USBSystemPrivate::_iterateSetupAPI(LPGUID guid, Function<void(HDEVINFO devC
       return false;
     }
 
-    if (!SetupDiGetDeviceInterfaceDetail(devClassInfo, &deviceInfo.devInterfaceData, NULL, 0, &requiredLength, NULL) && GetLastError() != ERROR_INSUFFICIENT_BUFFER)
+    if (!SetupDiGetDeviceInterfaceDetailA(devClassInfo, &deviceInfo.devInterfaceData, NULL, 0, &requiredLength, NULL) && GetLastError() != ERROR_INSUFFICIENT_BUFFER)
     {
       logger(LOG_ERROR) << "USBSystem: Failed to get size for interface details for index = " << index << ". Error = " << getDeviceError() << std::endl;
       SetupDiDestroyDeviceInfoList(devClassInfo);
       return false;
     }
 
-    deviceInfo.devInterfaceDetailData = byteAlloc<SP_DEVICE_INTERFACE_DETAIL_DATA>(requiredLength);
+    deviceInfo.devInterfaceDetailData = byteAlloc<SP_DEVICE_INTERFACE_DETAIL_DATA_A>(requiredLength);
 
-    deviceInfo.devInterfaceDetailData->cbSize = sizeof(SP_DEVICE_INTERFACE_DETAIL_DATA);
+    deviceInfo.devInterfaceDetailData->cbSize = sizeof(SP_DEVICE_INTERFACE_DETAIL_DATA_A);
 
-    if (!SetupDiGetDeviceInterfaceDetail(devClassInfo, &deviceInfo.devInterfaceData, &*deviceInfo.devInterfaceDetailData, requiredLength, &requiredLength, NULL))
+    if (!SetupDiGetDeviceInterfaceDetailA(devClassInfo, &deviceInfo.devInterfaceData, &*deviceInfo.devInterfaceDetailData, requiredLength, &requiredLength, NULL))
     {
       logger(LOG_ERROR) << "USBSystem: Failed to get interface details for index = " << index << ". Error = " << getDeviceError() << std::endl;
       SetupDiDestroyDeviceInfoList(devClassInfo);
@@ -165,7 +165,7 @@ void USBSystemPrivate::_enumerateHub(int busIndex, const String &hubIndex, const
 {
   String deviceName = "\\\\.\\" + hubName;
 
-  HANDLE hHubDevice = CreateFile(deviceName.c_str(), GENERIC_WRITE, FILE_SHARE_WRITE, NULL, OPEN_EXISTING, 0, NULL);
+  HANDLE hHubDevice = CreateFileA(deviceName.c_str(), GENERIC_WRITE, FILE_SHARE_WRITE, NULL, OPEN_EXISTING, 0, NULL);
 
   if (hHubDevice == INVALID_HANDLE_VALUE)
   {
@@ -327,7 +327,7 @@ bool USBSystemPrivate::_getStringDescriptor(HANDLE devHandle, ULONG index, UCHAR
 bool USBSystemPrivate::_iterateOverAllDevices(LPGUID guid, Function<void(HANDLE hubDevice, ULONG portIndex, const String &driverKeyName, DevicePtr &device)> process)
 {
   return _iterateSetupAPI(guid, [this, &process](HDEVINFO devClassInfo, DeviceInfo &devInfo, ULONG hubIndex) {
-    HANDLE hHCDev = CreateFile(devInfo.devInterfaceDetailData->DevicePath, GENERIC_WRITE, FILE_SHARE_WRITE, NULL, OPEN_EXISTING, 0, NULL);
+    HANDLE hHCDev = CreateFileA(devInfo.devInterfaceDetailData->DevicePath, GENERIC_WRITE, FILE_SHARE_WRITE, NULL, OPEN_EXISTING, 0, NULL);
 
     if (hHCDev != INVALID_HANDLE_VALUE)
     {

@@ -50,8 +50,10 @@ ELSEIF(CMAKE_SYSTEM_NAME STREQUAL "Windows")
   else()
     SET(COMMON_LIBS setupapi strmiids strmbase Cfgmgr32 Version legacy_stdio_definitions)
   endif()
+  if (NOT HAS_SETCYAPI)
   SET(COMMON_LIBS_PRIVATE ${CMAKE_SOURCE_DIR}/Voxel/CyAPI/CyAPI.lib)
-  
+  endif()
+    
   configure_file(
     ${CMAKE_CURRENT_SOURCE_DIR}/config/dllversion.rc.in
     ${CMAKE_CURRENT_BINARY_DIR}/dllversion.rc
@@ -136,10 +138,12 @@ set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "Voxel library package. Contains the main 
 set(CPACK_COMPONENTS_GROUPING ALL_COMPONENTS_IN_ONE)
 
 add_subdirectory(Voxel)
+if (BUILD_VOXEL_TEST)
 add_subdirectory(VoxelPCL)
 add_subdirectory(TI3DToF)
 add_subdirectory(Test)
 add_subdirectory(App)
+endif()
 add_subdirectory(Util)
 
 

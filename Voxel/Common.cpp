@@ -108,7 +108,7 @@ int getFiles(const String &dir, const String &matchString, Vector<String> &files
   }
   closedir(dp);
 #elif defined(WINDOWS)
-  WIN32_FIND_DATA ffd;
+  WIN32_FIND_DATAA ffd;
 
   String basePath;
 
@@ -117,7 +117,7 @@ int getFiles(const String &dir, const String &matchString, Vector<String> &files
   else
     basePath = dir + DIR_SEP;
 
-  HANDLE hFind = FindFirstFile((basePath + "*").c_str(), &ffd);
+  HANDLE hFind = FindFirstFileA((basePath + "*").c_str(), &ffd);
 
   if(INVALID_HANDLE_VALUE == hFind)
     return 0;
@@ -133,7 +133,7 @@ int getFiles(const String &dir, const String &matchString, Vector<String> &files
     if(n.find(matchString) != String::npos)
       files.push_back(basePath + n);
 
-  } while (FindNextFile(hFind, &ffd) != 0);
+  } while (FindNextFileA(hFind, &ffd) != 0);
 
   FindClose(hFind);
 #endif
@@ -244,7 +244,7 @@ bool isDirectory(const String &filename)
 bool makeDirectory(const String &filename)
 {
 #ifdef WINDOWS
-  return CreateDirectory(filename.c_str(), NULL);
+  return CreateDirectoryA(filename.c_str(), NULL);
 #elif defined(LINUX)
   return mkdir(filename.c_str(), 0755) == 0;
 #endif
