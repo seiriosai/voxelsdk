@@ -227,6 +227,10 @@ String getCurrentModulePath()
     size_t endpos = basePath.find_last_of(DIR_SEP);
     basePath = basePath.substr(0, endpos + 1);
 
+    if (basePath.substr(0, 4) == "\\\\?\\")
+    {
+        basePath = basePath.substr(4);
+    }
     return basePath;
 }
 }

@@ -71,12 +71,12 @@ bool DepthCameraLibrary::load()
 #ifdef LINUX
   _libraryPrivate->handle = dlopen(_libName.c_str(), RTLD_LAZY | RTLD_LOCAL);
 #elif defined(WINDOWS)
-  _libraryPrivate->handle = LoadLibraryA(_libName.c_str());
+  _libraryPrivate->handle = LoadLibraryExA(_libName.c_str(), NULL, LOAD_LIBRARY_SEARCH_DLL_LOAD_DIR);
 #endif
 
   if(!_libraryPrivate->handle) 
   {
-    logger(LOG_ERROR) << "DepthCameraLibrary: Failed to load " << _libName << ". Error: " << dynamicLoadError() << std::endl;
+    logger(LOG_ERROR) << "DepthCameraLibrary: Failed to load " << _libName << ". Error: " << GetLastError() << std::endl;
     return false;
   }
   return true;

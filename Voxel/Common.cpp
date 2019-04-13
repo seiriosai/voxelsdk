@@ -7,6 +7,7 @@
 #include "Common.h"
 #include <sstream>
 #include <iomanip>
+#include "Logger.h"
 
 #ifdef LINUX
 #include <dirent.h>
@@ -82,6 +83,7 @@ void breakLines(const String &str, std::ostream &out, const uint maxPerLine, con
   }
 }
 
+#if defined(WINDOWS)
 HMODULE GetCurrentModule()
 {
     HMODULE hModule = NULL;
@@ -92,6 +94,7 @@ HMODULE GetCurrentModule()
     
     return NULL;
 }
+#endif
 
 int getFiles(const String &dir, const String &matchString, Vector<String> &files)
 {
@@ -130,9 +133,15 @@ int getFiles(const String &dir, const String &matchString, Vector<String> &files
       size_t endpos = basePath.find_last_of(DIR_SEP);
       basePath = basePath.substr(0, endpos + 1);
   }
-  else
-    basePath = dir + DIR_SEP;
 
+  if (dir.substr(0, 4) == "\\\\?\\")
+  {
+      basePath = dir.substr(4) + DIR_SEP;
+  }
+  else
+      basePath = dir + DIR_SEP;
+
+  logger(LOG_WARNING) << "check default path: " << basePath;
   HANDLE hFind = FindFirstFileA((basePath + "*").c_str(), &ffd);
 
   if(INVALID_HANDLE_VALUE == hFind)
