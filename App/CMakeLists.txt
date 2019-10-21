@@ -11,6 +11,10 @@ add_executable(SimpleVoxelViewer SimpleVoxelViewer.cpp PCLViewer.cpp)
 target_include_directories(SimpleVoxelViewer PUBLIC ${PCL_INCLUDE_DIRS} ${EIGEN_INCLUDE_DIRS})
 target_link_libraries(SimpleVoxelViewer voxelpcl ${PCL_COMMON_LIBRARIES} ${PCL_IO_LIBRARIES} ${PCL_VISUALIZATION_LIBRARIES})
 
+add_executable(UVCTOFViewer UVCTOFViewer.cpp TOFPCLViewer.cpp)
+target_include_directories(UVCTOFViewer PUBLIC ${PCL_INCLUDE_DIRS} ${EIGEN_INCLUDE_DIRS})
+target_link_libraries(UVCTOFViewer voxelpcl ${PCL_COMMON_LIBRARIES} ${PCL_IO_LIBRARIES} ${PCL_VISUALIZATION_LIBRARIES})
+
 add_executable(VoxelCLI VoxelCLI.cpp CLIManager.cpp LineNoise.cpp PCLViewer.cpp)
 target_include_directories(VoxelCLI PUBLIC ${PCL_INCLUDE_DIRS} ${EIGEN_INCLUDE_DIRS})
 target_link_libraries(VoxelCLI voxelpcl ${PCL_COMMON_LIBRARIES} ${PCL_IO_LIBRARIES} ${PCL_VISUALIZATION_LIBRARIES})
@@ -19,7 +23,7 @@ add_executable(VXLDecoder VXLDecoder.cpp)
 target_include_directories(VXLDecoder PUBLIC ${PCL_INCLUDE_DIRS} ${EIGEN_INCLUDE_DIRS})
 target_link_libraries(VXLDecoder voxelpcl ${PCL_COMMON_LIBRARIES} ${PCL_IO_LIBRARIES})
 
-install(TARGETS SimpleVoxelViewer VoxelCLI VXLDecoder
+install(TARGETS SimpleVoxelViewer UVCTOFViewer VoxelCLI VXLDecoder
   RUNTIME DESTINATION bin
   COMPONENT apps
 )

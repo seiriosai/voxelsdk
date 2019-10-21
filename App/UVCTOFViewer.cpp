@@ -9,11 +9,11 @@
 
 #include <thread>
 
-#include "PCLViewer.h"
+#include "TOFPCLViewer.h"
  
-int main ()
+int TOFViewer ()
 {
-  Voxel::logger.setDefaultLogLevel(Voxel::LOG_INFO);
+  Voxel::logger.setDefaultLogLevel(Voxel::LOG_ERROR);
   
   Voxel::CameraSystem sys;
   Voxel::DepthCameraPtr depthCamera;
@@ -38,10 +38,11 @@ int main ()
   
   v.setDepthCamera(depthCamera);
   
+  
   v.start();
   
   
-  while(v.isRunning())
+  while(1||v.isRunning())
     std::this_thread::sleep_for(std::chrono::milliseconds(1000));
   
   return 0;

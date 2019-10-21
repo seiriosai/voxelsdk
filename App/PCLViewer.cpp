@@ -6,6 +6,7 @@
 
 #include "PCLViewer.h"
 #include "PCLGrabber.h"
+#include "vtkRenderWindow.h"
 
 #define PCL_NO_PRECOMPILE
 #include <pcl/visualization/pcl_visualizer.h>
@@ -15,7 +16,6 @@ namespace Voxel
 {
   
 #define CLOUD_NAME "cloud"
-
 PCLViewer::PCLViewer()
 {
 }
@@ -26,7 +26,8 @@ void PCLViewer::_renderLoop()
   {
     _viewer =  Ptr<pcl::visualization::PCLVisualizer>(new pcl::visualization::PCLVisualizer("PCL Voxel Viewer"));
     _viewer->setBackgroundColor(0, 0, 0);
-    //_viewer->createInteractor();
+    _viewer->createInteractor();
+	
     _viewer->addCoordinateSystem(1.0);
     _viewer->initCameraParameters();
     _viewer->setShowFPS(false);
@@ -39,7 +40,10 @@ void PCLViewer::_renderLoop()
   
   bool firstTime = false;
   int updateCount = 0;
-  
+  vtkSmartPointer<vtkRenderWindow> p = _viewer->getRenderWindow();
+  //p->SetOffScreenRendering(1);
+  //p->SetSize(80, 60);
+  //p->SetParentId(0);
   while(!_stopLoop && !_viewer->wasStopped())
   {
     {
