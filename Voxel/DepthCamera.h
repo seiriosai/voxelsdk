@@ -62,6 +62,7 @@ protected:
   String _name, _id, _chipset;
   
   Map<String, ParameterPtr> _parameters;
+  Map<int, String> _parameterssort;
   
   Ptr<RegisterProgrammer> _programmer;
   Ptr<Streamer> _streamer;

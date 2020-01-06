@@ -169,6 +169,7 @@ bool USBIO::USBIOPrivate::controlTransfer(Direction direction, RequestType reque
                                    value,
                                    index,
                                    data, length, timeout);
+  /*
   if ((needFullLength && status != length) || (!needFullLength && status < 0))
   {
     logger(LOG_ERROR) << "USBIO: Control transfer issue: Status " << status << std::endl;
@@ -176,7 +177,7 @@ bool USBIO::USBIOPrivate::controlTransfer(Direction direction, RequestType reque
   }
   
   length = (uint16_t)status;
-  
+  */
   return true;
 #elif defined(WINDOWS)
   CCyControlEndPoint *ept = handle->ControlEndPt;

@@ -174,6 +174,8 @@ public:
 
   virtual const uint8_t *amplitude() const = 0;
   virtual uint8_t *amplitude() = 0;
+  virtual Vector<uint16_t> amplitude1() const = 0;
+  virtual Vector<uint16_t> phase1() const = 0;
   virtual SizeType amplitudeWordWidth() const = 0; // in bytes
 
   virtual const uint8_t *flags() const = 0;
@@ -201,7 +203,7 @@ public:
 typedef Ptr<ToFRawFrame> ToFRawFramePtr;
 
 template <typename PhaseByteType, typename AmbientByteType>
-class ToFRawFrameTemplate : public ToFRawFrame
+class  ToFRawFrameTemplate : public ToFRawFrame
 {
 public:
   typedef PhaseByteType AmplitudeByteType;
@@ -234,6 +236,10 @@ public:
   {
     return (const uint8_t *)_amplitude.data();
   }
+  virtual Vector<uint16_t> amplitude1() const
+  {
+	  return _amplitude;
+  }
   
   virtual uint8_t *amplitude()
   {
@@ -248,6 +254,11 @@ public:
   virtual const uint8_t *phase() const
   {
     return (const uint8_t *)_phase.data();
+  }
+
+  virtual Vector<uint16_t> phase1() const
+  {
+	  return _phase;
   }
   
   virtual uint8_t *phase()

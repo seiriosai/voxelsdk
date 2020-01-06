@@ -100,7 +100,12 @@ bool VoxelProgrammerBase::getValue(const Voxel::Parameter &param, uint32_t &valu
   
   if(param.mask() == -1)
     return false; // No way to read value
-  
+  if(param.address() == 21504)
+  {
+      std::cout<<"mmmmmmmmmm,"<<param.address()<<std::endl;
+   // return true;
+  }
+
   if(!readRegister(param.address(), registerValue))
     return false;
   

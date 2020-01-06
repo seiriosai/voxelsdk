@@ -3,7 +3,7 @@ project (Voxel)
 
 set(VOXEL_MAJOR_VERSION 0)
 set(VOXEL_MINOR_VERSION 6)
-set(VOXEL_PATCH_VERSION 11)
+set(VOXEL_PATCH_VERSION 10)
 set(VOXEL_VERSION ${VOXEL_MAJOR_VERSION}.${VOXEL_MINOR_VERSION}.${VOXEL_PATCH_VERSION})
 set(VOXEL_ABI_VERSION 34)
 set(VOXEL_CONF_VERSION 1)
@@ -22,7 +22,7 @@ set(ARCH ${CMAKE_SYSTEM_PROCESSOR})
 
 if(CMAKE_SYSTEM_NAME STREQUAL "Linux")
   SET(LINUX 1)
-  add_definitions(-msse2 -pthread -std=c++11 -fPIC -ffast-math)
+  add_definitions( -pthread -std=c++11 -fPIC -ffast-math)
   ADD_DEFINITIONS(-DLINUX)  
 
   set(COMMON_LIBS ${COMMON_LIBS} usb-1.0 dl)
@@ -50,10 +50,8 @@ ELSEIF(CMAKE_SYSTEM_NAME STREQUAL "Windows")
   else()
     SET(COMMON_LIBS setupapi strmiids strmbase Cfgmgr32 Version legacy_stdio_definitions)
   endif()
-  if (NOT HAS_SETCYAPI)
   SET(COMMON_LIBS_PRIVATE ${CMAKE_SOURCE_DIR}/Voxel/CyAPI/CyAPI.lib)
-  endif()
-
+  
   configure_file(
     ${CMAKE_CURRENT_SOURCE_DIR}/config/dllversion.rc.in
     ${CMAKE_CURRENT_BINARY_DIR}/dllversion.rc
@@ -65,7 +63,6 @@ endif()
 
 set(CMAKE_PREFIX_PATH ${CMAKE_BINARY_DIR})
 
-if (NOT HAS_SETCYAPI)
 if(NOT CMAKE_CONFIGURATION_TYPES)
   set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/lib)
   set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/bin)
@@ -78,7 +75,6 @@ else()
     set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_${c} ${PROJECT_BINARY_DIR}/bin)
     set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY_${c} ${PROJECT_BINARY_DIR}/lib)
   endforeach()
-endif()
 endif()
   
 include_directories(
@@ -114,8 +110,7 @@ if(DOXYGEN_FOUND)
     WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
     COMMENT "Generating API documentation with Doxygen" VERBATIM
   )
-  SET (EXECUTE_ARG "${CMAKE_BINARY_DIR}/Doxyfile")
-  install(CODE "execute_process(COMMAND ${DOXYGEN_EXECUTABLE} \"${EXECUTE_ARG}\" WORKING_DIRECTORY \"${CMAKE_BINARY_DIR}\")"
+  install(CODE "execute_process(COMMAND ${DOXYGEN_EXECUTABLE} ${CMAKE_BINARY_DIR}/Doxyfile WORKING_DIRECTORY ${CMAKE_BINARY_DIR})"
         COMPONENT voxel_dev)
   
   if(LINUX)
@@ -140,12 +135,10 @@ set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "Voxel library package. Contains the main 
 set(CPACK_COMPONENTS_GROUPING ALL_COMPONENTS_IN_ONE)
 
 add_subdirectory(Voxel)
-add_subdirectory(TI3DToF)
-if (BUILD_VOXEL_TEST)
 add_subdirectory(VoxelPCL)
+add_subdirectory(TI3DToF)
 add_subdirectory(Test)
 add_subdirectory(App)
-endif()
 add_subdirectory(Util)
 
 

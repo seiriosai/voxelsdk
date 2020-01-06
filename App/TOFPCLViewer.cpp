@@ -27,14 +27,13 @@
 #include "opencv2/videoio.hpp"
 #include <iostream>
 
-
-
-#include <windows.h>
+//#include <windows.h>
 
 #define PCL_NO_PRECOMPILE
 #include <pcl/visualization/pcl_visualizer.h>
 #undef PCL_NO_PRECOMPILE
 //extern HWND pwnd;
+extern int camid;
 namespace Voxel
 {
   
@@ -42,10 +41,11 @@ namespace Voxel
 vtkSmartPointer<vtkImageData> imageData;
 vtkSmartPointer<vtkImageData> grayimageData;
 vtkSmartPointer<vtkImageData> grbimageData;
-cv::VideoCapture capture(0);    // 打开摄像头
+
+cv::VideoCapture capture;//(camid);    // 打开摄像头
 PCLViewer::PCLViewer()
 {
-
+	capture = cv::VideoCapture(camid);
 	int width = 320;
 	int height = 240;
 	imageData = vtkSmartPointer<vtkImageData>::New();
@@ -110,13 +110,17 @@ PCLViewer::PCLViewer()
 		return;
 	}
 
-	while (0 && true)
+	while (1 && true)
 	{
 		cv::Mat frame;
 		capture >> frame;    // 读取图像帧至frame
 		if (!frame.empty())	// 判断是否为空
 		{
 			cv::imshow("camera", frame);
+		}
+		else
+		{
+			
 		}
 
 		if (cv::waitKey(30) > 0)		// delay 30 ms等待按键
@@ -310,8 +314,14 @@ void PCLViewer::_renderLoop()
 	//p->SetParentId(0);
 	//p->SetParentId(pwnd);
 	ren0->GetActiveCamera()->SetPosition(0, 0, -2);
-	
-	//ren3->GetActiveCamera()->SetPosition(0, 0, 1000);
+	//ren0->ResetCamera();
+	//ren0->GetActiveCamera()->Zoom(1.5);
+	ren1->ResetCamera();
+	ren1->GetActiveCamera()->Zoom(1.5);
+	ren2->ResetCamera();
+	ren2->GetActiveCamera()->Zoom(1.5);
+	ren3->ResetCamera();
+	ren3->GetActiveCamera()->Zoom(1.5);
 	//ren3->GetActiveCamera()->SetFocalPoint(0.25,0.75,0);
 	
 	//renWin->SetParentId(pren);
@@ -449,7 +459,8 @@ void PCLViewer::removeDepthCamera()
 
 void PCLViewer::_cloudRenderCallback(const pcl::PointCloud<pcl::PointXYZI> &cloud)
 {
-	//return;
+ std::cout<<__FUNCTION__<<std::endl;
+	return;
   if(_viewer && !_viewer->wasStopped())
   {
     Lock<Mutex> _(_cloudUpdateMutex);
@@ -485,6 +496,8 @@ void PCLViewer::_cloudRenderCallback(const pcl::PointCloud<pcl::PointXYZI> &clou
 
 void PCLViewer::_cloudRenderCallbackPCF(const Voxel::PointCloudFrame &cloud)
 {
+std::cout<<__FUNCTION__<<std::endl;
+	return;
 	//return;
 	if (_viewer && !_viewer->wasStopped())
 	{
@@ -496,6 +509,8 @@ void PCLViewer::_cloudRenderCallbackPCF(const Voxel::PointCloudFrame &cloud)
 
 void PCLViewer::_cloudRenderCallbackDepthF(const Voxel::DepthFrame &df)
 {
+std::cout<<__FUNCTION__<<std::endl;
+	return;
 	//return;
 	if (_viewer && !_viewer->wasStopped())
 	{
@@ -505,6 +520,7 @@ void PCLViewer::_cloudRenderCallbackDepthF(const Voxel::DepthFrame &df)
 		//std::cout << f.depth.size() << endl;
 		//std::cout << f.size.height<<", "<< f.size.width << endl;
 		double *ptr = (double*)imageData->GetScalarPointer();
+		
 		//std::cout << *ptr << std::endl;
 		float dmaxv = 0.0;
 		float dminv = 1000000.0;
@@ -541,11 +557,13 @@ void PCLViewer::_cloudRenderCallbackDepthF(const Voxel::DepthFrame &df)
 }
 void PCLViewer::_cloudRenderCallbackRawF(const Voxel::RawFrame &f, const Voxel::DepthCamera::FrameType type)
 {
+std::cout<<__FUNCTION__<<std::endl;
+	return;
 	//return;
 	if (_viewer && !_viewer->wasStopped())
 	{
 		Lock<Mutex> _(_cloudUpdateMutex);
-
+		
 
 	}
 }
@@ -566,7 +584,7 @@ void PCLViewer::start()
 
   _stopLoop = false;
   
-  _renderThread = std::thread(&PCLViewer::_renderLoop, this);
+  //_renderThread = std::thread(&PCLViewer::_renderLoop, this);
   
   _grabber = Ptr<pcl::Grabber>(new Voxel::PCLGrabber(*_depthCamera));
   

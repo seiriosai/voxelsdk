@@ -36,7 +36,7 @@ bool TintinCDKCamera::_init()
   
   USBIOPtr usbIO(new USBIO(controlDevice));
 
-  _programmer = Ptr<RegisterProgrammer>(new VoxelUSBProgrammer(
+  _programmer = Ptr<RegisterProgrammer>(new VoxelUSBProgrammer(//ffffnnnn
       { {0x2D, 1}, {0x52, 1}, {0x54, 1}, {0x4B, 2}, {0x4E, 2}, {0x58, 3}, {0x5C, 3} },
       {
         {0x58, {0x08, 0x09, 0}},

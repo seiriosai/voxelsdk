@@ -46,7 +46,7 @@ void help()
 }
 
 
-int main0(int argc, char *argv[])
+int main(int argc, char *argv[])
 {
   CSimpleOpt s(argc, argv, argumentSpecifications);
   

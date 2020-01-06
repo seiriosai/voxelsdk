@@ -21,13 +21,12 @@ class VOXEL_EXPORT UVCXU : public UVC
 {
 protected:
   int _xuID;
-  uint8_t _index;
 
   class VOXEL_NO_EXPORT UVCXUPrivate;
   Ptr<UVCXUPrivate> _uvcXUPrivate;
 
 public:
-  UVCXU(DevicePtr usb, int xuID, uint8_t index);
+  UVCXU(DevicePtr usb, int xuID);
 
   bool isInitialized();
   

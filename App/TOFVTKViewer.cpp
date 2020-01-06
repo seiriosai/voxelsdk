@@ -11,9 +11,12 @@
 #include "vtkCellArray.h"
 #include "vtkInteractorStyleTrackballCamera.h"
 #include "vtkInteractorStyleUnicam.h"
+#include "Configuration.h"
 
 int tofVtkViewer(vtkPoints* ps,vtkCellArray* cs)
 {
+	
+	
 	vtkPoints *points = ps;// vtkPoints::New();
 	vtkCellArray *cells = cs;// vtkCellArray::New();
 

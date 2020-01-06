@@ -54,9 +54,7 @@ add_library(voxel SHARED
   ${COMMON_LIB_FILES}
 )
 
-if (NOT HAS_SETCYAPI)
 set_library_output_directory(voxel)
-endif()
 
 add_library(Voxel::voxel ALIAS voxel)
 
@@ -131,7 +129,7 @@ install(FILES
   Filter/FilterFactory.h
   Filter/DarkPixFilter.h
   Filter/DenoiseFilter.h
-  Filter/FlypixFilter.h
+  Filter/Flypixfilter.h
   Filter/HDRFilter.h
   Filter/IIRFilter.h
   Filter/MedianFilter.h
@@ -151,24 +149,22 @@ install(FILES
   COMPONENT voxel_dev
 )
 
-if (BUILD_WITH_SWIG)
 add_subdirectory(SWIG)
-endif()
 
 IF(LINUX)
   set(CPACK_COMPONENTS_ALL voxel)
   set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "Voxel library package. Contains the main Voxel library.")
-  set(CPACK_DEBIAN_PACKAGE_DEPENDS "libusb-1.0-0, libudev1")
+  set(CPACK_DEBIAN_PACKAGE_DEPENDS "libudev1")
   create_cpack_config(libvoxel ${VOXEL_VERSION})
 
   set(CPACK_COMPONENTS_ALL voxel_dev)
   set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "Voxel library developer package. Contains header files needed to compile applications linking to Voxel library.")
-  set(CPACK_DEBIAN_PACKAGE_DEPENDS "libvoxel (= ${VOXEL_VERSION}), libusb-1.0-0-dev, libudev-dev, linux-libc-dev")
+  set(CPACK_DEBIAN_PACKAGE_DEPENDS "libvoxel (= ${VOXEL_VERSION}), libudev-dev, linux-libc-dev")
   create_cpack_config(libvoxel-dev ${VOXEL_VERSION})
   
   set(CPACK_COMPONENTS_ALL voxel_python)
   set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "Python bindings for Voxel library.")
-  set(CPACK_DEBIAN_PACKAGE_DEPENDS "libvoxel (= ${VOXEL_VERSION}), python2.7 (>= 2.7.0)")
+  set(CPACK_DEBIAN_PACKAGE_DEPENDS "libvoxel (= ${VOXEL_VERSION}), python3.7 (>= 3.7.0)")
   create_cpack_config(libvoxel-python ${VOXEL_VERSION})
 ENDIF()
 

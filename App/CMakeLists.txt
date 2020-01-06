@@ -13,7 +13,11 @@ target_link_libraries(SimpleVoxelViewer voxelpcl ${PCL_COMMON_LIBRARIES} ${PCL_I
 
 add_executable(UVCTOFViewer UVCTOFViewer.cpp TOFPCLViewer.cpp)
 target_include_directories(UVCTOFViewer PUBLIC ${PCL_INCLUDE_DIRS} ${EIGEN_INCLUDE_DIRS})
-target_link_libraries(UVCTOFViewer voxelpcl ${PCL_COMMON_LIBRARIES} ${PCL_IO_LIBRARIES} ${PCL_VISUALIZATION_LIBRARIES})
+target_link_libraries(UVCTOFViewer voxelpcl opencv_core opencv_highgui opencv_imgcodecs opencv_imgproc opencv_videoio ${PCL_COMMON_LIBRARIES} ${PCL_IO_LIBRARIES} ${PCL_VISUALIZATION_LIBRARIES})
+
+add_library(voxelpydll SHARED voxelpydll.cpp uvccamera.cpp)
+target_include_directories(voxelpydll PUBLIC ${PCL_INCLUDE_DIRS} ${EIGEN_INCLUDE_DIRS})
+target_link_libraries(voxelpydll voxelpcl opencv_core opencv_highgui opencv_imgcodecs opencv_imgproc opencv_videoio ${PCL_COMMON_LIBRARIES} ${PCL_IO_LIBRARIES} ${PCL_VISUALIZATION_LIBRARIES})
 
 add_executable(VoxelCLI VoxelCLI.cpp CLIManager.cpp LineNoise.cpp PCLViewer.cpp)
 target_include_directories(VoxelCLI PUBLIC ${PCL_INCLUDE_DIRS} ${EIGEN_INCLUDE_DIRS})

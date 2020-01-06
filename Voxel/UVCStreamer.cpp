@@ -24,7 +24,6 @@
 #include <dshow.h>
 #include <comdef.h>
 
-
 /// ISampleGrabber interface is not available in headers currently. Adding it directly here.
 DEFINE_GUID(IID_ISampleGrabber, 0x6b652fff, 0x11fe, 0x4fce, 0x92, 0xad, 0x02, 0x66, 0xb5, 0xd7, 0xc7, 0x8f);
 
@@ -546,7 +545,6 @@ bool UVCStreamer::setVideoMode(const VideoMode &videoMode)
   
   fmt.fmt.pix.width = videoMode.frameSize.width;
   fmt.fmt.pix.height = videoMode.frameSize.height;
-  fmt.fmt.pix.pixelformat = V4L2_PIX_FMT_YUYV;
   
   if(_uvcStreamerPrivate->uvc->getUVCPrivate().xioctl(VIDIOC_S_FMT, &fmt) == -1)
   {
