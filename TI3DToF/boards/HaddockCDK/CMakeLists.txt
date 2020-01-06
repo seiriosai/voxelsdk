@@ -4,9 +4,7 @@ add_library(haddockcdk SHARED
   ${COMMON_LIB_FILES}
 )
 
-if(NOT HAS_SETCYAPI)
 set_voxel_library_output_directory(haddockcdk)
-endif()
 
 generate_export_header(haddockcdk
   EXPORT_FILE_NAME "SymbolExports.h"

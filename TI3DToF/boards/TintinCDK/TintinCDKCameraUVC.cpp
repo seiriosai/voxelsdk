@@ -112,6 +112,15 @@ bool TintinCDKCameraUVC::_init()
   _parameters.erase(LUMPED_DEAD_TIME);
   _parameters.erase(ILLUM_DC_CORR);
   _parameters.erase(ILLUM_DC_CORR_DIR);
+  for (auto i:_parameterssort)
+  {
+	  if (i.second == LUMPED_DEAD_TIME || i.second == ILLUM_DC_CORR || i.second == ILLUM_DC_CORR_DIR)
+	  {
+		  int idx = i.first;
+		  //_parameterssort.erase(idx);
+		  std::cout <<__FILE__<< "_parameterssort erase " << i.second << std::endl;
+	  }
+  }
 
 
   if (!set(COMP_VREF, 1405U))

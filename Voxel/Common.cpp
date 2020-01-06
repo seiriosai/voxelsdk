@@ -7,7 +7,6 @@
 #include "Common.h"
 #include <sstream>
 #include <iomanip>
-#include "Logger.h"
 
 #ifdef LINUX
 #include <dirent.h>
@@ -83,18 +82,6 @@ void breakLines(const String &str, std::ostream &out, const uint maxPerLine, con
   }
 }
 
-#if defined(WINDOWS)
-HMODULE GetCurrentModule()
-{
-    HMODULE hModule = NULL;
-    if (GetModuleHandleEx(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS, (LPCTSTR)GetCurrentModule, &hModule) != 0)
-    {
-        return hModule;
-    }
-    
-    return NULL;
-}
-#endif
 
 int getFiles(const String &dir, const String &matchString, Vector<String> &files)
 {
@@ -121,28 +108,16 @@ int getFiles(const String &dir, const String &matchString, Vector<String> &files
   }
   closedir(dp);
 #elif defined(WINDOWS)
-  WIN32_FIND_DATAA ffd;
+  WIN32_FIND_DATA ffd;
 
   String basePath;
 
   if (dir.size() == 0)
-  {
-      char szCurrentPath[1024] = { 0 };
-      GetModuleFileNameA(GetCurrentModule(), szCurrentPath, 1024);
-      basePath = szCurrentPath;
-      size_t endpos = basePath.find_last_of(DIR_SEP);
-      basePath = basePath.substr(0, endpos + 1);
-  }
-
-  if (dir.substr(0, 4) == "\\\\?\\")
-  {
-      basePath = dir.substr(4) + DIR_SEP;
-  }
+    basePath = "";
   else
-      basePath = dir + DIR_SEP;
+    basePath = dir + DIR_SEP;
 
-  logger(LOG_WARNING) << "check default path: " << basePath;
-  HANDLE hFind = FindFirstFileA((basePath + "*").c_str(), &ffd);
+  HANDLE hFind = FindFirstFile((basePath + "*").c_str(), &ffd);
 
   if(INVALID_HANDLE_VALUE == hFind)
     return 0;
@@ -158,7 +133,7 @@ int getFiles(const String &dir, const String &matchString, Vector<String> &files
     if(n.find(matchString) != String::npos)
       files.push_back(basePath + n);
 
-  } while (FindNextFileA(hFind, &ffd) != 0);
+  } while (FindNextFile(hFind, &ffd) != 0);
 
   FindClose(hFind);
 #endif
@@ -269,7 +244,7 @@ bool isDirectory(const String &filename)
 bool makeDirectory(const String &filename)
 {
 #ifdef WINDOWS
-  return CreateDirectoryA(filename.c_str(), NULL);
+  return CreateDirectory(filename.c_str(), NULL);
 #elif defined(LINUX)
   return mkdir(filename.c_str(), 0755) == 0;
 #endif

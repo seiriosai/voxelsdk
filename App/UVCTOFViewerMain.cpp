@@ -307,6 +307,8 @@ void thread1(int x){
 #include "vtkImageCanvasSource2D.h"
 int main()
 {
+	
+	
 	TOFViewer();
 	/*
 	vtkSmartPointer<vtkImageCanvasSource2D> canvas = vtkSmartPointer<vtkImageCanvasSource2D>::New();

@@ -60,8 +60,6 @@
 %include "../SerializedObject.h"
 %include "../USBSystem.h"
 %include "../USBIO.h"
-%include "../UVC.h"
-%include "../UVCXU.h"
 %include "../HardwareSerializer.h"
 %include "Frame.i"
 

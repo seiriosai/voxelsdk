@@ -23,7 +23,7 @@
 #include "FrameGenerator.h"
 #include "PointCloudFrameGenerator.h"
 #include "Configuration.h"
-
+#include <map>
 #define CALIB_SECT_LENS "lens"
 #define CALIB_SECT_LENS_ID 0
 
@@ -62,6 +62,7 @@ protected:
   String _name, _id, _chipset;
   
   Map<String, ParameterPtr> _parameters;
+  std::map<int, String> _parameterssort;
   
   Ptr<RegisterProgrammer> _programmer;
   Ptr<Streamer> _streamer;

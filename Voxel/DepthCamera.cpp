@@ -69,6 +69,9 @@ bool DepthCamera::_addParameters(const Vector<ParameterPtr> &params)
     if(_parameters.find(p->name()) == _parameters.end())
     {
       _parameters[p->name()] = p;
+	  _parameterssort[_parameterssort.size()] = p->name();
+	  //logger(LOG_ERROR) << "DepthCamera: Add an parameter to the list of parameters, with name " << p->name() << ". address " <<p->address()<<std::endl;
+
     }
     else
     {
@@ -124,7 +127,7 @@ bool DepthCamera::_callbackAndContinue(uint32_t &callBackTypesToBeCalled, DepthC
 }
 
 
-void DepthCamera::_captureLoop()
+void DepthCamera::_captureLoop()//ffffnnnn
 {
   uint consecutiveCaptureFails = 0;
   
@@ -366,6 +369,7 @@ bool DepthCamera::close()
   _pointCloudBuffers.clear();
   
   _parameters.clear();
+  _parameterssort.clear();
   
   return true;
 }
@@ -489,14 +493,42 @@ bool DepthCamera::refreshParams()
 {
   Lock<Mutex> _(_accessMutex);
   bool ret = true;
+
+  
+  for (int i = 0; i < _parameterssort.size();i++)
+  {
+	  if (_parameterssort.count(i) == 0 || _parameters.count(_parameterssort[i]) == 0)
+	  {
+		  continue;
+	  }
+	  auto p = _parameters[_parameterssort[i]];
+	  if (!p->refresh())
+	  {
+		  logger(LOG_ERROR) << "DepthCamera: Failed to update value for parameter '" << p->name() << "'" << std::endl;
+		  ret = false;
+	  }
+	  else
+	  {
+	//	  logger(LOG_ERROR) << "DepthCamera: Success to update value for parameter '" << p->name() << "'" << " " << (const int)(p->address()) << std::endl;
+	  }
+  }
+  /*
   for(auto &i: _parameters)
   {
     if(!i.second->refresh())
     {
-      logger(LOG_ERROR) << "DepthCamera: Failed to update value for parameter '" << i.first << "'" << std::endl;
-      ret = false;
+		logger(LOG_ERROR) << "DepthCamera: Failed to update value for parameter '" << i.first << "'" << std::endl;
+		ret = false;
     }
+	else
+	{
+		logger(LOG_ERROR) << "DepthCamera: Success to update value for parameter '" << i.first << "'" <<" "<<(const int)(i.second->address())<< std::endl;
+	}
+	
+	
   }
+  */
+  std::cout << std::endl;
   return ret;
 }
 

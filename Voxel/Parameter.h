@@ -64,6 +64,7 @@ public:
   }
   
   inline const String &name() const { return _name; }
+  inline int registerLen() const { return _registerLength; }
   inline const String &displayName() const { return _displayName; }
   inline const String &description() const { return _description; }
   inline uint32_t address() const { return _address; }

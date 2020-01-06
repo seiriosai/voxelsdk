@@ -118,7 +118,7 @@ PCLViewer::PCLViewer()
 		{
 			cv::imshow("camera", frame);
 		}
-
+		
 		if (cv::waitKey(30) > 0)		// delay 30 msµÈ´ý°´¼ü
 		{
 			break;
@@ -310,8 +310,14 @@ void PCLViewer::_renderLoop()
 	//p->SetParentId(0);
 	//p->SetParentId(pwnd);
 	ren0->GetActiveCamera()->SetPosition(0, 0, -2);
-	
-	//ren3->GetActiveCamera()->SetPosition(0, 0, 1000);
+	//ren0->ResetCamera();
+	//ren0->GetActiveCamera()->Zoom(1.5);
+	ren1->ResetCamera();
+	ren1->GetActiveCamera()->Zoom(1.5);
+	ren2->ResetCamera();
+	ren2->GetActiveCamera()->Zoom(1.5);
+	ren3->ResetCamera();
+	ren3->GetActiveCamera()->Zoom(1.5);
 	//ren3->GetActiveCamera()->SetFocalPoint(0.25,0.75,0);
 	
 	//renWin->SetParentId(pren);
@@ -500,11 +506,13 @@ void PCLViewer::_cloudRenderCallbackDepthF(const Voxel::DepthFrame &df)
 	if (_viewer && !_viewer->wasStopped())
 	{
 		Lock<Mutex> _(_cloudUpdateMutex);
+		
 		Voxel::DepthFrame f = df;
 		//std::cout << f.amplitude.size() << endl;
 		//std::cout << f.depth.size() << endl;
 		//std::cout << f.size.height<<", "<< f.size.width << endl;
 		double *ptr = (double*)imageData->GetScalarPointer();
+		
 		//std::cout << *ptr << std::endl;
 		float dmaxv = 0.0;
 		float dminv = 1000000.0;
@@ -535,19 +543,52 @@ void PCLViewer::_cloudRenderCallbackDepthF(const Voxel::DepthFrame &df)
 		{
 			*grayptr-- = f.amplitude[i]*(mul-1000);
 		}
-
+		
 
 	}
 }
 void PCLViewer::_cloudRenderCallbackRawF(const Voxel::RawFrame &f, const Voxel::DepthCamera::FrameType type)
 {
 	//return;
+	//std::cout << type << std::endl;
+	/*
+	if (type == Voxel::DepthCamera::FRAME_RAW_FRAME_PROCESSED)
+	{
+		
+		Voxel::ToFRawFrame *d = (Voxel::ToFRawFrame *)(&f);
+		unsigned short * p = (unsigned short*)d->phase();
+		std::cout <<d->size.height<<d->size.width<<p[320*120] << std::endl;
+		if (!d)
+		{
+			std::cout << "Null frame captured? or not of type DepthFrame" << std::endl;
+			
+		}
+		
+	}
 	if (_viewer && !_viewer->wasStopped())
 	{
 		Lock<Mutex> _(_cloudUpdateMutex);
+		double *ptr = (double*)imageData->GetScalarPointer();
 
+		//std::cout << *ptr << std::endl;
+		float dmaxv = 0.0;
+		float dminv = 1000000.0;
+		Voxel::ToFRawFrameTemplate<uint16_t, uint8_t> *d = (Voxel::ToFRawFrameTemplate<uint16_t, uint8_t> *)(&f);
+		for (int i = 0; i < d->size.height * d->size.width; i++)
+		{
+			if (dmaxv < d->_phase[i])dmaxv = d->_phase[i];
+			if (dminv > d->_phase[i])dminv = d->_phase[i];
+		}
+		float dmul = 256 / (dmaxv - dminv);
+		ptr += d->size.height * d->size.width - 1;
+		for (int i = 0; i < d->size.height * d->size.width; i++)
+		{
+			*ptr-- = (dmaxv - d->_phase[i])*dmul;
+		}
 
+		
 	}
+	*/
 }
 
 void PCLViewer::start()

@@ -1,12 +1,9 @@
-if (NOT HAS_SETCYAPI)
 find_package(Voxel ${VOXEL_VERSION} REQUIRED)
-endif()
 
 add_library(ti3dtof SHARED
   VoxelProgrammerBase.cpp
   VoxelUSBProgrammer.cpp
   VoxelXUProgrammer.cpp
-  VoxelSPCAXUProgrammer.cpp
   ToFCameraBase.cpp
   ToFCamera.cpp
   ToFDepthFrameGenerator.cpp
@@ -19,9 +16,7 @@ add_library(ti3dtof SHARED
   ${COMMON_LIB_FILES}
 )
 
-if(NOT HAS_SETCYAPI)
 set_library_output_directory(ti3dtof)
-endif()
 
 add_library(Voxel::ti3dtof ALIAS ti3dtof)
 
@@ -37,7 +32,6 @@ add_subdirectory(boards)
 
 list(APPEND CONF_FILES
   OPT8320.dml
-  Vader.dml
   OPT9220.dml
   OPT9221.dml
 )
@@ -132,7 +126,6 @@ install(FILES
   VoxelProgrammerBase.h
   VoxelUSBProgrammer.h
   VoxelXUProgrammer.h
-  VoxelSPCAXUProgrammer.h
   ${CMAKE_CURRENT_BINARY_DIR}/TI3DToFExports.h
   DESTINATION include/voxel-${VOXEL_VERSION}/ti3dtof
   COMPONENT ti3dtof_dev

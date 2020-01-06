@@ -42,10 +42,6 @@
 
 /* Parameter for enabling/disabling phase offsets.*/
 #define PARAM_PHASE_OFFSETS_DISABLE "disablePhaseOffsets"
-
-/* Parameters for enabling dealiasing in calculus */
-#define PARAM_DATA_TO_REPLACE "dataToReplace"
-
 namespace Voxel
 {
   
@@ -53,7 +49,7 @@ namespace TI
 {
   
 ToFFrameGenerator::ToFFrameGenerator(): 
-  FrameGenerator((TI_VENDOR_ID << 16) | DepthCamera::FRAME_RAW_FRAME_PROCESSED, DepthCamera::FRAME_RAW_FRAME_PROCESSED, 0, 6),
+  FrameGenerator((TI_VENDOR_ID << 16) | DepthCamera::FRAME_RAW_FRAME_PROCESSED, DepthCamera::FRAME_RAW_FRAME_PROCESSED, 0, 5),
 _bytesPerPixel(-1), _dataArrangeMode(-1), _histogramEnabled(false)
 {
   _frameGeneratorParameters[PARAM_BYTES_PER_PIXEL] = SerializablePtr(new SerializableUnsignedInt());
@@ -78,7 +74,6 @@ _bytesPerPixel(-1), _dataArrangeMode(-1), _histogramEnabled(false)
   
   _frameGeneratorParameters[PARAM_DEALIASED_16BIT_MODE] = SerializablePtr(new SerializableUnsignedInt());
   _frameGeneratorParameters[PARAM_PHASE_OFFSETS_DISABLE] = SerializablePtr(new SerializableUnsignedInt());
-  _frameGeneratorParameters[PARAM_DATA_TO_REPLACE] = SerializablePtr(new SerializableUnsignedInt());
 }
 
 bool ToFFrameGenerator::_onWriteConfiguration()
@@ -151,16 +146,6 @@ bool ToFFrameGenerator::_onReadConfiguration()
     _phaseOffsetCorrectionData.resize((p.size() + 1)/2);
     memcpy(_phaseOffsetCorrectionData.data(), p.data(), p.size());
   }
-
-  if(_majorVersion == 0 && _minorVersion < 6)
-  {
-    _dataToReplace = AMBIENT_DATA;
-  }
-  else
-  {
-    if(!get(PARAM_DATA_TO_REPLACE, _dataToReplace))
-      return false;
-  }
   
 	_disablePhaseOffsets = false;
 
@@ -179,7 +164,7 @@ bool ToFFrameGenerator::setParameters(const String &phaseOffsetFileName, const V
                                       uint32_t quadCount,
                                       bool dealiased16BitMode,
                                       int dealiasedPhaseMask,
-                                      bool disablePhaseOffsets, uint32_t dataToReplace)
+                                      bool disablePhaseOffsets)
 {
   if(_phaseOffsetFileName == phaseOffsetFileName && bytesPerPixel == _bytesPerPixel && 
     _dataArrangeMode == dataArrangeMode && 
@@ -189,7 +174,7 @@ bool ToFFrameGenerator::setParameters(const String &phaseOffsetFileName, const V
     _crossTalkCoefficients == crossTalkCoefficients && 
     _frameType == type && _quadCount == quadCount &&
   _dealiased16BitMode == dealiased16BitMode && _dealiasedPhaseMask == dealiasedPhaseMask &&
-  _disablePhaseOffsets == disablePhaseOffsets && _dataToReplace == dataToReplace)
+  _disablePhaseOffsets == disablePhaseOffsets)
 
     return true;
   
@@ -197,7 +182,6 @@ bool ToFFrameGenerator::setParameters(const String &phaseOffsetFileName, const V
   _phaseOffsetCorrectionData = phaseOffsets;
   _dealiasedPhaseMask = dealiasedPhaseMask;
   _disablePhaseOffsets = disablePhaseOffsets;
-  _dataToReplace = dataToReplace;
   
   if(phaseOffsets.size() == maxFrameSize.width*maxFrameSize.height + 2) // Ignore the first two elements if present
   {
@@ -316,8 +300,7 @@ bool ToFFrameGenerator::setParameters(const String &phaseOffsetFileName, const V
     !_set(PARAM_ROWS_TO_MERGE, _rowsToMerge) ||
     !_set(PARAM_COLUMNS_TO_MERGE, _columnsToMerge) ||
     !_set(PARAM_DEALIASED_16BIT_MODE, d) ||
-    !_set(PARAM_PHASE_OFFSETS_DISABLE, p) ||
-    !_set(PARAM_DATA_TO_REPLACE, _dataToReplace))
+    !_set(PARAM_PHASE_OFFSETS_DISABLE, p))
     return false;
   
   return writeConfiguration();
@@ -512,28 +495,17 @@ bool ToFFrameGenerator::_generateToFRawFrame(const FramePtr &in, FramePtr &out)
           for (auto k = 0; k < 8; k++) 
           {
             t->_amplitude[index2 + k] = data[index1 + k] & MAX_PHASE_VALUE;
+            t->_flags[index2 + k] = (data[index1 + k + 8] & 0xF000) >> 12;
             
             if(_dealiased16BitMode)
             {
-              if (_dataToReplace == AMBIENT_DATA)
-              {
-                t->_phase[index2 + k] = ((data[index1 + k + 8] & MAX_PHASE_VALUE) << 4) + (data[index1 + k] >> 12);
-                t->_ambient[index2 + k] = 0xF;
-                t->_flags[index2 + k] = (data[index1 + k + 8] & 0xF000) >> 12;
-              }
-
-              else if (_dataToReplace == FLAGS_DATA)
-              {
-                t->_phase[index2 + k] = (data[index1 + k + 8]);
-                t->_flags[index2 + k] = 0xF;
-                t->_ambient[index2 + k] = (data[index1 + k] & 0xF000) >> 12;
-              }
+              t->_phase[index2 + k] = ((data[index1 + k + 8] & MAX_PHASE_VALUE) << 4) + (data[index1 + k] >> 12);
+              t->_ambient[index2 + k] = 0xF;
             }
             else
             {
               t->_phase[index2 + k] = data[index1 + k + 8] & MAX_PHASE_VALUE;
               t->_ambient[index2 + k] = (data[index1 + k] & 0xF000) >> 12;
-              t->_flags[index2 + k] = (data[index1 + k + 8] & 0xF000) >> 12;
             }
           }
         }
@@ -552,28 +524,17 @@ bool ToFFrameGenerator::_generateToFRawFrame(const FramePtr &in, FramePtr &out)
           index1 = i*_size.width*2 + j*2;
           index2 = i*_size.width + j;
           t->_amplitude[index2] = data[index1] & MAX_PHASE_VALUE;
+          t->_flags[index2] = (data[index1 + 1] & 0xF000) >> 12;
 
           if(_dealiased16BitMode)
           {
-            if (_dataToReplace == AMBIENT_DATA)
-            {
-              t->_phase[index2] = ((data[index1 + 1] & MAX_PHASE_VALUE) << 4) + (data[index1] >> 12);
-              t->_ambient[index2] = 0xF;
-              t->_flags[index2] = (data[index1 + 1] & 0xF000) >> 12;
-            }
-
-            else if (_dataToReplace == FLAGS_DATA)
-            {
-              t->_phase[index2] = data[index1 + 1];
-              t->_ambient[index2] = (data[index1] & 0xF000) >> 12;
-              t->_flags[index2] = 0xF;
-            }
+            t->_phase[index2] = ((data[index1 + 1] & MAX_PHASE_VALUE) << 4) + (data[index1] >> 12);
+            t->_ambient[index2] = 0xF;
           }
           else
           {
             t->_phase[index2] = data[index1 + 1] & MAX_PHASE_VALUE;
             t->_ambient[index2] = (data[index1] & 0xF000) >> 12;
-            t->_flags[index2] = (data[index1 + 1] & 0xF000) >> 12;
           }
         }
       }

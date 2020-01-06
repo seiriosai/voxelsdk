@@ -4,9 +4,7 @@ add_library(rts5825camera SHARED
   ${COMMON_LIB_FILES}
 )
 
-if(NOT HAS_SETCYAPI)
 set_voxel_library_output_directory(rts5825camera)
-endif()
 
 generate_export_header(rts5825camera
   EXPORT_FILE_NAME "SymbolExports.h"

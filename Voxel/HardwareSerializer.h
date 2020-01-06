@@ -6,7 +6,6 @@
 
 #include "Common.h"
 #include "USBIO.h"
-#include "UVCXU.h"
 #include "SerializedObject.h"
 
 /**
@@ -20,10 +19,6 @@ class VOXEL_EXPORT HardwareSerializer
 {
   uint8_t _ioRequestCode, _sizeRequestCode;
   USBIOPtr _usbIO;
-  UVCXUPtr _xu;
-
-  bool _initXUReadWrite(uint32_t address); // 3 bytes starting address for XU read/write
-
 public:
   HardwareSerializer() {}
   
@@ -35,10 +30,7 @@ public:
    * 
    */
   HardwareSerializer(USBIOPtr &usbIO, uint8_t ioRequestCode, uint8_t sizeRequestCode): 
-    _usbIO(usbIO), _ioRequestCode(ioRequestCode), _sizeRequestCode(sizeRequestCode), _xu(nullptr) {}
-
-  HardwareSerializer(UVCXUPtr &xu):
-    _xu(xu), _usbIO(nullptr) {}
+    _usbIO(usbIO), _ioRequestCode(ioRequestCode), _sizeRequestCode(sizeRequestCode) {}
   
   /**
    * @param version is the version info of format of 'so' 
@@ -62,10 +54,8 @@ public:
   bool writeToFile(const String &filename, Version &version, TimeStampType &timestamp, SerializedObject &so);
   
   inline void setUSBIO(USBIOPtr &usbIO) { _usbIO = usbIO; }
-
-  inline void setUVCXU(UVCXUPtr &xu){ _xu = xu; }
   
-  inline operator bool () { return (_usbIO.get() != nullptr || _xu.get() != nullptr); }
+  inline operator bool () { return _usbIO.get() != nullptr; }
   
   /**
    * Serialized size in hardware is assumed to be 4 bytes long in big endian format

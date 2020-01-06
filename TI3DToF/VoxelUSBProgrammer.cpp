@@ -55,6 +55,10 @@ bool VoxelUSBProgrammer::_readRegister(uint16_t slaveAddress, uint16_t registerA
       logger(LOG_ERROR) << "VoxelUSBProgrammer: Could not read register for address 0x" << std::hex << slaveAddress << registerAddress << std::endl;
       return false;
     }
+	else
+	{
+		logger(LOG_DEBUG) << "VoxelUSBProgrammer: Could read register for address 0x" << std::hex << slaveAddress << registerAddress << std::endl; //ffffnnnn
+	}
     
     value = data[0];
   }

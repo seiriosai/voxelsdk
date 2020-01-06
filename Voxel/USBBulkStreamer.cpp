@@ -111,7 +111,7 @@ public:
       else
       {
         retriesCount++;
-        if(retriesCount == 3)
+        if(retriesCount == 3000)
         {
           if (!usbIO->resetBulkEndPoint(endpoint))
           {
@@ -122,7 +122,7 @@ public:
           logger(LOG_WARNING) << "USBBulkStreamer: Resetting bulk endpoint at " << _timer.getCurrentRealTime() << std::endl;
           retriesCount = 0;
           resetCount++;
-          if(resetCount % 100 == 0)
+          if(resetCount % 100 == 0)//ffffnnnn
           {
             logger(LOG_ERROR) << "USBBulkStreamer: Did not get a frame in 100 attempts" << std::endl;
             captureRunning = false;
