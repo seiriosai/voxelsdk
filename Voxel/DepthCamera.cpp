@@ -127,7 +127,7 @@ bool DepthCamera::_callbackAndContinue(uint32_t &callBackTypesToBeCalled, DepthC
 }
 
 
-void DepthCamera::_captureLoop()//ffffnnnn
+void DepthCamera::_captureLoop()
 {
   uint consecutiveCaptureFails = 0;
   

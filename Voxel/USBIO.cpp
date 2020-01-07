@@ -231,13 +231,13 @@ bool USBIO::USBIOPrivate::bulkTransfer(uint8_t endpoint, uint8_t *data, long toT
   else
     dataEP = handle->BulkOutEndPt;
   
-  dataEP->TimeOut =  timeout;
+  dataEP->TimeOut = timeout;
   transferredLength = toTransferLength;
   lastTransferSize = toTransferLength;
   
   if (!dataEP->XferData(data, transferredLength, NULL))
   {
-    logger(LOG_ERROR) << "USBIO: Could not transfer '" <<toTransferLength<<","<< transferredLength << "' bytes" << std::endl;
+    logger(LOG_ERROR) << "USBIO: Could not transfer '" << transferredLength << "' bytes" << std::endl;
     return false;
   }
   return true;

@@ -20,6 +20,7 @@
 #define DIR_SEP "/"
 #define PATH_SEP ':'
 #elif defined(WINDOWS)
+#include "windows.h"
 #define DIR_SEP "\\"
 #define PATH_SEP ';'
 #endif
@@ -204,6 +205,36 @@ bool Configuration::getLocalFile(const String &type, String &name)
   return true;
 }
 
+#ifdef WINDOWS
+namespace
+{
+HMODULE GetCurrentModule()
+{
+    HMODULE hModule = NULL;
+    if (GetModuleHandleEx(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS, (LPCTSTR)GetCurrentModule, &hModule) != 0)
+    {
+        return hModule;
+    }
+
+    return NULL;
+}
+
+String getCurrentModulePath()
+{
+    char szCurrentPath[1024] = { 0 };
+    GetModuleFileNameA(GetCurrentModule(), szCurrentPath, 1024);
+    String basePath = szCurrentPath;
+    size_t endpos = basePath.find_last_of(DIR_SEP);
+    basePath = basePath.substr(0, endpos + 1);
+
+    if (basePath.substr(0, 4) == "\\\\?\\")
+    {
+        basePath = basePath.substr(4);
+    }
+    return basePath;
+}
+}
+#endif
 
 bool Configuration::_getPaths(const String &type, Vector<String> &paths)
 {
@@ -237,12 +268,16 @@ bool Configuration::_getPaths(const String &type, Vector<String> &paths)
     paths.insert(paths.begin(), splits.begin(), splits.end()); // Insert at the beginning to prefer over standard path
   }
   
-  //String localPath;
-  //ffffnnnn
-  //if(getLocalPath(type, localPath))
-  //  paths.insert(paths.begin(), localPath);
+  String localPath;
   
+  if(getLocalPath(type, localPath))
+    paths.insert(paths.begin(), localPath);
+
+#ifdef WINDOWS
+  paths.insert(paths.begin(), getCurrentModulePath()); // windows if exe is not the current path, we set it always read from dll folder.
+#else
   paths.insert(paths.begin(), ""); // Empty path for absolute file paths and also relative file paths
+#endif
   
   if(logger.getCurrentLogLevel() >= LOG_DEBUG) 
   {
@@ -1037,7 +1072,7 @@ int MainConfigurationFile::_getNewCameraProfileID(bool inHost)
     if((inHost && c->second.getLocation() == ConfigurationFile::IN_CAMERA) || (!inHost && c->second.getLocation() == ConfigurationFile::IN_HOST))
       continue;
     
-    maxID = std::max(maxID, c->first);
+    maxID = (maxID > c->first) ? maxID : c->first;
   }
   
   if(inHost && maxID == 0)

@@ -170,30 +170,18 @@ void PCLViewer::_renderLoop()
   {
     _viewer =  Ptr<pcl::visualization::PCLVisualizer>(new pcl::visualization::PCLVisualizer("UVCTOFViewer"));
     _viewer->setBackgroundColor(0, 0, 0);
-    //_viewer->createInteractor();
-	
+    
     _viewer->addCoordinateSystem(1.0);
     _viewer->initCameraParameters();
     _viewer->setShowFPS(false);
     _viewer->resetCameraViewpoint();
     _viewer->setCameraPosition(15, 15, 20, 0, 0, 5, 0, 0, 1);
 	_viewer->removeOrientationMarkerWidgetAxes();
-	
-	//iren->SetInteractorStyle(style);
-	//_viewer->setupInteractor(iren, _viewer->getRenderWindow());
 
-	//_viewer->createInteractor();
-	
 	vtkSmartPointer<vtkRenderWindow> renWin = _viewer->getRenderWindow();
 	ren0 = renWin->GetRenderers()->GetFirstRenderer();
 	
-	//ren0->GetRenderWindow()->RemoveAllObservers();
-	//ren0->RemoveAllObservers();
-	//while (ren0->GetActors()->GetNumberOfItems())
-	//{
-	//	ren0->GetActors()->GetLastActor()->RemoveAllObservers();
-	//	ren0->RemoveAllObservers();
-	//}
+	
 	
 	vtkCamera *rcamera = ren0->GetActiveCamera();
 	rcamera->SetClippingRange(0.0, 6.0);
@@ -247,35 +235,15 @@ void PCLViewer::_renderLoop()
 	grbredActor->SetInputData(grbcanvas->GetOutput());
 	trans =
 		vtkSmartPointer<vtkTransform>::New();
-	//trans->PostMultiply();
-	//trans->Translate(0, 0, 1);
-	//trans->RotateY(45);
-	//trans->Scale(s);
-	//trans->GetScale(s);
+	
 	
 	grbredActor->SetUserTransform(trans);
-	//grbredActor->PickableOff();
-	//grbredActor->SetScale(s);
-	
-	/*
-	vtkSmartPointer<vtkActor2D> actor2d =
-		vtkSmartPointer<vtkActor2D>::New();
-	actor2d->GetPositionCoordinate()->SetValue(0.1, 0.1, 0.0);
-	actor2d->GetActualPosition2Coordinate()->SetValue(0.9, 0.9, 0.0);
-	vtkSmartPointer<vtkImageMapper> m2d = vtkSmartPointer<vtkImageMapper>::New();
-	
-	m2d->SetInputConnection(grbcanvas->GetOutputPort());
-	actor2d->SetMapper(m2d);
-	*/
-	
 	
 
 	ren1 = vtkRenderer::New();
 	ren2 = vtkRenderer::New();
 	ren3 = vtkRenderer::New();
 
-	//vtkRenderWindow *renWin = vtkRenderWindow::New();
-	//vtkRenderWindowInteractor *iren = vtkRenderWindowInteractor::New();
 	ren1->AddActor(redActor);
 	ren2->AddActor(grayredActor);
 	ren3->AddActor(grbredActor);
@@ -305,22 +273,16 @@ void PCLViewer::_renderLoop()
 	ren1->SetViewport(0.5, 0.5, 1, 1);
 	ren2->SetViewport(0, 0, 0.5, 0.5);
 	ren0->SetViewport(0.5, 0, 1, 0.5);
-	//p->SetOffScreenRendering(1);
-	//p->SetSize(80, 60);
-	//p->SetParentId(0);
-	//p->SetParentId(pwnd);
+	
 	ren0->GetActiveCamera()->SetPosition(0, 0, -2);
-	//ren0->ResetCamera();
-	//ren0->GetActiveCamera()->Zoom(1.5);
+	
 	ren1->ResetCamera();
 	ren1->GetActiveCamera()->Zoom(1.5);
 	ren2->ResetCamera();
 	ren2->GetActiveCamera()->Zoom(1.5);
 	ren3->ResetCamera();
 	ren3->GetActiveCamera()->Zoom(1.5);
-	//ren3->GetActiveCamera()->SetFocalPoint(0.25,0.75,0);
 	
-	//renWin->SetParentId(pren);
 	
 	
   }
@@ -330,11 +292,7 @@ void PCLViewer::_renderLoop()
   
   bool firstTime = false;
   int updateCount = 0;
-  //vtkSmartPointer<vtkRenderWindow> p = _viewer->getRenderWindow();
-  //p->SetOffScreenRendering(1);
-  //p->SetSize(80, 60);
-  //p->SetParentId(0);
-  //p->SetParentId(pwnd);
+  
   
   while(!_stopLoop && !_viewer->wasStopped())
   {
@@ -353,38 +311,9 @@ void PCLViewer::_renderLoop()
 	  grbcanvas->DrawImage(0, 0, grbimageData);
 	  grbcanvas->Update();
 	  grbredActor->SetInputData(grbcanvas->GetOutput());
-	  /*
-	  double vp[4];
-	  ren3->GetViewport(vp);
 	  
-	  double wp1[3] = { vp[0], vp[1], 0.0 };
-	  double wp2[3] = { vp[2], vp[3], 0.0 };
-
-	  ren3->NormalizedDisplayToViewport(wp1[0], wp1[1]);
-	  ren3->ViewportToNormalizedViewport(wp1[0], wp1[1]);
-	  ren3->NormalizedViewportToView(wp1[0], wp1[1], wp1[2]);
-	  ren3->ViewToWorld(wp1[0], wp1[1], wp1[2]);
-
-	  ren3->NormalizedDisplayToViewport(wp2[0], wp2[1]);
-	  ren3->ViewportToNormalizedViewport(wp2[0], wp2[1]);
-	  ren3->NormalizedViewportToView(wp2[0], wp2[1], wp2[2]);
-	  ren3->ViewToWorld(wp2[0], wp2[1], wp2[2]);
-	  */
-	  //double d1, d2, d3;
-	  //ren0->GetActiveCamera()->GetPosition(d1, d2, d3);
-	  //std::cout <<"p:"<< d1 << " " << d2 << " " << d3 << std::endl;
-	  //ren0->GetActiveCamera()->GetFocalPoint(d1, d2, d3);
-	  //std::cout <<"f:"<< d1 << " " << d2 << " " << d3 << std::endl;
-	  //ren0->GetActiveCamera()->GetClippingRange(d1, d2);
-	  //std::cout << "c:" << d1 << " " << d2 << std::endl;
-	  //ren1->Render();
-	  //double d1, d2, d3;
-	  //ren1->GetRenderWindow()->SetTileScale(0.5);
-	 
-//	  ren3->GetRenderWindow()->GetInteractor()->Disable();
 	  double d[3];
-	  //ren3->GetActiveCamera()->GetPosition(d);
-	  //std::cout << "e:" << d[0] << " " << d[1] << " " << d[2] << std::endl;
+	  
       if(_cloud && _handler)
       {
         double psize = 1.0, opacity = 1.0, linesize =1.0;
@@ -423,8 +352,7 @@ void PCLViewer::_renderLoop()
     }
   }
   
-  //_viewer->close();
-  //_viewer = nullptr;
+  
   _stopLoop = true;
 }
 
@@ -460,28 +388,6 @@ void PCLViewer::_cloudRenderCallback(const pcl::PointCloud<pcl::PointXYZI> &clou
   {
     Lock<Mutex> _(_cloudUpdateMutex);
 	pcl::PointCloud<pcl::PointXYZI> cloud1 = cloud;
-	//std::cout << cloud1.size() << endl;
-	/*
-	vtkPoints *points = vtkPoints::New();
-	vtkCellArray *cells = vtkCellArray::New();
-
-	
-	//  ifstream fs(argv[1]);
-	ifstream fs("simplePoints.txt");
-	vtkIdType idtype;
-	double x, y, z;
-	for (size_t i = 0; i < cloud.points.size(); i++)
-	{
-		x = cloud.points[i].x;
-		y = cloud.points[i].y;
-		z = cloud.points[i].z;
-		idtype = points->InsertNextPoint(x, y, z);
-		
-		cells->InsertNextCell(1, &idtype);
-	}
-	extern int tofVtkViewer(vtkPoints* ps, vtkCellArray* cs);
-	tofVtkViewer(points, cells);
-	*/
 	
     _cloud = boost::shared_ptr<const pcl::PointCloud<pcl::PointXYZI>>(new pcl::PointCloud<pcl::PointXYZI>(cloud));
     _handler = Ptr<pcl::visualization::PointCloudColorHandlerGenericField<pcl::PointXYZI>>(
@@ -508,9 +414,7 @@ void PCLViewer::_cloudRenderCallbackDepthF(const Voxel::DepthFrame &df)
 		Lock<Mutex> _(_cloudUpdateMutex);
 		
 		Voxel::DepthFrame f = df;
-		//std::cout << f.amplitude.size() << endl;
-		//std::cout << f.depth.size() << endl;
-		//std::cout << f.size.height<<", "<< f.size.width << endl;
+		
 		double *ptr = (double*)imageData->GetScalarPointer();
 		
 		//std::cout << *ptr << std::endl;
@@ -549,46 +453,7 @@ void PCLViewer::_cloudRenderCallbackDepthF(const Voxel::DepthFrame &df)
 }
 void PCLViewer::_cloudRenderCallbackRawF(const Voxel::RawFrame &f, const Voxel::DepthCamera::FrameType type)
 {
-	//return;
-	//std::cout << type << std::endl;
-	/*
-	if (type == Voxel::DepthCamera::FRAME_RAW_FRAME_PROCESSED)
-	{
-		
-		Voxel::ToFRawFrame *d = (Voxel::ToFRawFrame *)(&f);
-		unsigned short * p = (unsigned short*)d->phase();
-		std::cout <<d->size.height<<d->size.width<<p[320*120] << std::endl;
-		if (!d)
-		{
-			std::cout << "Null frame captured? or not of type DepthFrame" << std::endl;
-			
-		}
-		
-	}
-	if (_viewer && !_viewer->wasStopped())
-	{
-		Lock<Mutex> _(_cloudUpdateMutex);
-		double *ptr = (double*)imageData->GetScalarPointer();
-
-		//std::cout << *ptr << std::endl;
-		float dmaxv = 0.0;
-		float dminv = 1000000.0;
-		Voxel::ToFRawFrameTemplate<uint16_t, uint8_t> *d = (Voxel::ToFRawFrameTemplate<uint16_t, uint8_t> *)(&f);
-		for (int i = 0; i < d->size.height * d->size.width; i++)
-		{
-			if (dmaxv < d->_phase[i])dmaxv = d->_phase[i];
-			if (dminv > d->_phase[i])dminv = d->_phase[i];
-		}
-		float dmul = 256 / (dmaxv - dminv);
-		ptr += d->size.height * d->size.width - 1;
-		for (int i = 0; i < d->size.height * d->size.width; i++)
-		{
-			*ptr-- = (dmaxv - d->_phase[i])*dmul;
-		}
-
-		
-	}
-	*/
+	
 }
 
 void PCLViewer::start()
@@ -639,11 +504,7 @@ void PCLViewer::stop()
   
   if(_renderThread.joinable()) _renderThread.join();
   
-  //if (_viewer)
-  //{
-  //  Lock<Mutex> _(_cloudUpdateMutex);
-  //  _viewer->removePointCloud(CLOUD_NAME);
-  //}
+  
 
 #ifdef WINDOWS
   _viewer = nullptr;

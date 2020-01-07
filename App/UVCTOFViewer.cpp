@@ -14,9 +14,7 @@
 int main ()
 {
 	
-  //std::cout << "mainstart" << std::endl;
-  //system("set VOXEL_SDK_PATH=D:\\vs13prj\\voxelsdk-0.6.10\\build");
-  //Voxel::Configuration::setEnvironmentVariable("VOXEL_SDK_PATH", "D:\\vs13prj\\voxelsdk-0.6.10\\build");
+  
   Voxel::logger.setDefaultLogLevel(Voxel::LOG_INFO);
   
 
@@ -38,23 +36,7 @@ int main ()
     std::cerr << "SimplePCLViewer: Could not open a depth camera." << std::endl;
     return -1;
   }
-  /*
-  Voxel::Map<Voxel::String,Voxel::ParameterPtr> m = depthCamera->getParameters();
-  for (Voxel::Map<Voxel::String, Voxel::ParameterPtr>::iterator it = m.begin(); it != m.end();it++)
-  {
-	  Voxel::ParameterPtr pp = it->second;
-	  Voxel::String pname = it->first;
-	  std::cout << pname << std::endl;
-	  uint32_t v;
-	  std::cout << pp->address() << std::endl;
-	  std::cout << pp->description() << std::endl;
-	  std::cout << pp->displayName() << std::endl;
-	  std::cout << "old value:" <<std::hex<< (int)pp->msb() <<" "<<std::hex<< (int)pp->lsb() << std::endl;
-	  depthCamera->getProgrammer()->readRegister(pp->address(), v);
-	  std::cout << "value:" << v << std::endl;
-	 
-  }
-  */
+ 
   
   depthCamera->registerCallback(Voxel::DepthCamera::FRAME_DEPTH_FRAME, [&](Voxel::DepthCamera &dc, const Voxel::Frame &frame, Voxel::DepthCamera::FrameType c) {
 	  const Voxel::DepthFrame *d = dynamic_cast<const Voxel::DepthFrame *>(&frame);

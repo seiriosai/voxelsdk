@@ -4,7 +4,9 @@ add_library(calculuscdk SHARED
   ${COMMON_LIB_FILES}
 )
 
+if(NOT HAS_SETCYAPI)
 set_voxel_library_output_directory(calculuscdk)
+endif()
 
 generate_export_header(calculuscdk
   EXPORT_FILE_NAME "SymbolExports.h"

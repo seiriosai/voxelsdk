@@ -307,12 +307,8 @@ bool ParameterDMLParser::getParameters(Vector<ParameterPtr> &parameters)
   
   for(; x; x = x->NextSiblingElement())
   {
-	  if (!(p = _getParameter(x, id, skipIfNull)) && !skipIfNull)
-	  {
-		  logger(LOG_ERROR) << "ParameterDMLParser: _getParameter error = '" << id << "'" << std::endl;
-		  return false;
-	  }
-      
+    if(!(p = _getParameter(x, id, skipIfNull)) && !skipIfNull)
+      return false;
     
     if(!p)
       continue;
@@ -339,10 +335,7 @@ bool ParameterDMLParser::getParameters(Vector<ParameterPtr> &parameters)
       logger(LOG_ERROR) << "ParameterDMLParser: Found a section with no name in DML file '" << _xmlFileName << std::endl;
       return false;
     }
-	else
-	{
-		logger(LOG_DEBUG) << "section name:" << section->Attribute("name") << std::endl;
-	}
+    
     TinyXML2::XMLElement *group = _goTo(section, { "groupList", "group" }, false);
     
     for(; group; group = group->NextSiblingElement())
@@ -352,10 +345,6 @@ bool ParameterDMLParser::getParameters(Vector<ParameterPtr> &parameters)
         logger(LOG_ERROR) << "ParameterDMLParser: Found a group with no name in section " << section->Attribute("name") << " in DML file '" << _xmlFileName << std::endl;
         return false;
       }
-	  else
-	  {
-		  logger(LOG_DEBUG) << "group name:" << group->Attribute("name") << std::endl;
-	  }
       
       TinyXML2::XMLElement *property = _goTo(group, { "propertyList", "property" }, false);
       
@@ -366,10 +355,6 @@ bool ParameterDMLParser::getParameters(Vector<ParameterPtr> &parameters)
           logger(LOG_ERROR) << "ParameterDMLParser: Found a property with no name or propertyId, in " << section->Attribute("name") << "." << group->Attribute("name") << std::endl;
           return false;
         }
-		else
-		{
-			logger(LOG_INFO) << "property name:" << property->Attribute("name") << " property propertyId:" << property->Attribute("propertyId")<<"-"<<paramMap.find(property->Attribute("propertyId"))->second->address() << std::endl;
-		}
         
         name = property->Attribute("name");
         id = property->Attribute("propertyId");
