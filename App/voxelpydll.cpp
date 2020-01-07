@@ -122,13 +122,11 @@ int tofInit()
 				 tofframenum = FRAMEBUF_NUM;
 			 }
 			 readtofpos = writetofpos + FRAMEBUF_NUM - tofframenum;
-			//tofframe = *d;
+			
 		});
-	//(*depthCamera)->_initStartParams();
-	//(*depthCamera)->refreshParams();
+
 	(*depthCamera)->start();
-	//(*depthCamera)->stop();
-	//(*depthCamera)->start();
+	
 	return 0;
 }
 
@@ -171,7 +169,7 @@ float* tofReadDepth()
 		}
 	}
 
-	return  array_deepth[pos%FRAMEBUF_NUM];//deepframe.depth.data();
+	return  array_deepth[pos%FRAMEBUF_NUM];
 }
 
 float* tofReadAmplitude()
@@ -206,7 +204,7 @@ float* tofReadAmplitude()
 		}
 	}
 
-	return  array_amplitude[pos%FRAMEBUF_NUM]; //deepframe.amplitude.data();
+	return  array_amplitude[pos%FRAMEBUF_NUM]; 
 }
 unsigned char* tofReadPhase()
 {
@@ -254,15 +252,12 @@ char* getTofProfiles()
 	Voxel::String str;
 	for(auto &p: profiles)
 	{
-		//std::cout << p.first << ", " << p.second;
+		
 		if(p.second == "Calibrated Lens Only" || p.second == "Calibrated High Ambient" || p.second == "High Ambient")
 		{
 
 		}
-		else
-		{
-		  //continue;
-		}
+		
 	
 		char sz[50]={0};
 		snprintf(sz,sizeof(sz),"%d",p.first);
@@ -385,12 +380,11 @@ char*  getTofParrameter()
 char*     setTofConfParrameter(char* section, char* parName, char* parValue)
 {
 	printf("%s %s %s %s\n",__FUNCTION__,section,parName,parValue);
-	//(*depthCamera)->stop();
+	
 	int id = getTofProfile();
 	Voxel::ConfigurationFile *configFile = (*depthCamera)->configFile.getCameraProfile(id);
 	configFile->set(section,parName,parValue);
-	//(*depthCamera)->configFile.set(section,parName,parValue);
-	//(*depthCamera)->start();
+	
 	static Voxel::String str = configFile->get(section,parName);
 	return (char*)str.c_str();
 }

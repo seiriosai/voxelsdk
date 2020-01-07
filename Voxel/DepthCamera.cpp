@@ -126,7 +126,7 @@ bool DepthCamera::_callbackAndContinue(uint32_t &callBackTypesToBeCalled, DepthC
 }
 
 
-void DepthCamera::_captureLoop()//ffffnnnn
+void DepthCamera::_captureLoop()
 {
   uint consecutiveCaptureFails = 0;
   
@@ -509,19 +509,7 @@ bool DepthCamera::refreshParams()
 //			logger(LOG_ERROR) << "DepthCamera: Success to update value for parameter '" << p->name() << "'" << " " << (const int)(p->address()) << std::endl;	  
 		}  
 	}
-  /*
-  for(auto &i: _parameters)
-  {
-    if(!i.second->refresh())
-    {
-      logger(LOG_ERROR) << "DepthCamera: Failed to update value for parameter '" << i.first << "'" << std::endl;
-      ret = false;
-    }
-	else
-	{
-		logger(LOG_ERROR) << "DepthCamera: Success to update value for parameter '" << i.first << "'" <<" "<<(const int)(i.second->address())<< std::endl;
-	}
-  }*/
+  
   
   return ret;
 }

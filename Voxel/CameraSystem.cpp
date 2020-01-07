@@ -62,7 +62,7 @@ void CameraSystem::_loadLibraries(const Vector<String> &paths)
         
         if (p->getABIVersion() != VOXEL_ABI_VERSION)
         {
-          logger(LOG_WARNING) << "CameraSystem: Ignoring Voxel library " << file << " with ABI version = " << p->getABIVersion() << ". Expected ABI version = " << VOXEL_ABI_VERSION << std::endl;
+          //logger(LOG_WARNING) << "CameraSystem: Ignoring Voxel library " << file << " with ABI version = " << p->getABIVersion() << ". Expected ABI version = " << VOXEL_ABI_VERSION << std::endl;
           continue;
         }
         
@@ -249,6 +249,7 @@ Vector<DevicePtr> CameraSystem::scan()
   {
     Device d(device->interfaceID(), device->deviceID(), ""); // get device ID without serial number
     
+    logger(LOG_WARNING) << "CameraSystem: device in factories count=" << _factories.size();
     auto f = _factories.find(d.id());
     if(f != _factories.end())
     {

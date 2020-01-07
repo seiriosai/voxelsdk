@@ -41,9 +41,7 @@ void PCLViewer::_renderLoop()
   bool firstTime = false;
   int updateCount = 0;
   vtkSmartPointer<vtkRenderWindow> p = _viewer->getRenderWindow();
-  //p->SetOffScreenRendering(1);
-  //p->SetSize(80, 60);
-  //p->SetParentId(0);
+  
   while(!_stopLoop && !_viewer->wasStopped())
   {
     {

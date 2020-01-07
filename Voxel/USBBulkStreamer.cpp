@@ -103,26 +103,26 @@ public:
         else
         {
           droppedFrames++;
-          if(droppedFrames % 1 == 0)
+          if(droppedFrames % 100 == 0)
             logger(LOG_ERROR) << "USBBulkStreamer: Dropped frames " << droppedFrames
-                      << " Valid frames " << validFrames << " "<<transferred<<" "<< bufSize<< std::endl;
+                              << " Valid frames " << validFrames << std::endl;
         }
       }
       else
       {
         retriesCount++;
-        if(retriesCount >= 3000)
+        if(retriesCount == 3)
         {
           if (!usbIO->resetBulkEndPoint(endpoint))
           {
             logger(LOG_ERROR) << "USBBulkStreamer: Bulk End point reset failed" << std::endl;
-            //captureRunning = false;
+            captureRunning = false;
           }
 
           logger(LOG_WARNING) << "USBBulkStreamer: Resetting bulk endpoint at " << _timer.getCurrentRealTime() << std::endl;
           retriesCount = 0;
           resetCount++;
-          if(resetCount % 100 == 0)//ffffnnnn
+          if(resetCount % 100 == 0)
           {
             logger(LOG_ERROR) << "USBBulkStreamer: Did not get a frame in 100 attempts" << std::endl;
             captureRunning = false;

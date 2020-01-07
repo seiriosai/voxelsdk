@@ -203,7 +203,7 @@ public:
 typedef Ptr<ToFRawFrame> ToFRawFramePtr;
 
 template <typename PhaseByteType, typename AmbientByteType>
-class  ToFRawFrameTemplate : public ToFRawFrame
+class ToFRawFrameTemplate : public ToFRawFrame
 {
 public:
   typedef PhaseByteType AmplitudeByteType;

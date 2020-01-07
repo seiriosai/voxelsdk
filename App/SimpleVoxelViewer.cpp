@@ -33,18 +33,15 @@ int main ()
     std::cerr << "SimplePCLViewer: Could not open a depth camera." << std::endl;
     return -1;
   }
-  depthCamera->start();
- 
-//  Voxel::PCLViewer v;
+    
+  Voxel::PCLViewer v;
   
-//  v.setDepthCamera(depthCamera);
+  v.setDepthCamera(depthCamera);
   
-//  v.start();
+  v.start();
   
-  
-  while(1 /*|| v.isRunning()*/)
+  while(v.isRunning())
     std::this_thread::sleep_for(std::chrono::milliseconds(1000));
-  std::cout<<__FUNCTION__<<std::endl;
-
+  
   return 0;
 }

@@ -71,12 +71,12 @@ bool DepthCameraLibrary::load()
 #ifdef LINUX
   _libraryPrivate->handle = dlopen(_libName.c_str(), RTLD_LAZY | RTLD_LOCAL);
 #elif defined(WINDOWS)
-  _libraryPrivate->handle = LoadLibrary(_libName.c_str());
+  _libraryPrivate->handle = LoadLibraryExA(_libName.c_str(), NULL, LOAD_LIBRARY_SEARCH_DLL_LOAD_DIR);
 #endif
 
   if(!_libraryPrivate->handle) 
   {
-    logger(LOG_ERROR) << "DepthCameraLibrary: Failed to load " << _libName << ". Error: " << dynamicLoadError() << std::endl;
+    logger(LOG_ERROR) << "DepthCameraLibrary: Failed to load " << _libName << ". Error: " << GetLastError() << std::endl;
     return false;
   }
   return true;
@@ -98,7 +98,7 @@ DepthCameraFactoryPtr DepthCameraLibrary::getDepthCameraFactory()
 #endif
 
   String error;
-  if (!g && (error = dynamicLoadError()).size())  
+  if (!g || (error = dynamicLoadError()).size())  
   {
     logger(LOG_DEBUG) << "DepthCameraLibrary: Failed to load symbol " << symbol << " from library " << _libName << ". Error: " << error << std::endl;
     return 0;
@@ -124,7 +124,7 @@ FilterFactoryPtr DepthCameraLibrary::getFilterFactory()
   #endif
   
   String error;
-  if(!g && (error = dynamicLoadError()).size())  
+  if(!g || (error = dynamicLoadError()).size())  
   {
     logger(LOG_DEBUG) << "DepthCameraLibrary: Failed to load symbol " << symbol << " from library " << _libName << ". Error: " << error << std::endl;
     return 0;
@@ -150,7 +150,7 @@ DownloaderFactoryPtr DepthCameraLibrary::getDownloaderFactory()
   #endif
   
   String error;
-  if(!g && (error = dynamicLoadError()).size())  
+  if(!g || (error = dynamicLoadError()).size())  
   {
     logger(LOG_DEBUG) << "DepthCameraLibrary: Failed to load symbol " << symbol << " from library " << _libName << ". Error: " << error << std::endl;
     return 0;
@@ -209,16 +209,16 @@ int DepthCameraLibrary::getABIVersion()
   DWORD  verHandle = NULL;
   UINT   size = 0;
   LPBYTE lpBuffer = NULL;
-  DWORD  verSize = GetFileVersionInfoSize(_libName.c_str(), &verHandle);
+  DWORD  verSize = GetFileVersionInfoSizeA(_libName.c_str(), &verHandle);
 
   if (verSize != NULL)
   {
     Vector<char> verData;
     verData.resize(verSize);
 
-    if (GetFileVersionInfo(_libName.c_str(), verHandle, verSize, verData.data()))
+    if (GetFileVersionInfoA(_libName.c_str(), verHandle, verSize, verData.data()))
     {
-      if (VerQueryValue(verData.data(), "\\", (VOID FAR* FAR*)&lpBuffer, &size))
+      if (VerQueryValueA(verData.data(), "\\", (VOID FAR* FAR*)&lpBuffer, &size))
       {
         if (size)
         {
